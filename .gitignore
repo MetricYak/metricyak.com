@@ -9,3 +9,4 @@ public/
 node_modules/
 .env.*
 !.env.example
+src/gatsby-types.d.ts
