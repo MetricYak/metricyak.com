@@ -1,0 +1,34 @@
+{
+  "tiers": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "price": "Free",
+      "tagline": "For solo builders herding their first few metrics.",
+      "features": ["Up to 10 metrics", "Up to 5 monitors", "Community support"],
+      "cta": { "label": "Get Started", "href": "https://github.com/metricyak/metricyak" }
+    },
+    {
+      "id": "team",
+      "name": "Team",
+      "price": "$49/mo",
+      "tagline": "For teams who want monitors that investigate themselves.",
+      "features": [
+        "Unlimited metrics",
+        "Unlimited monitors",
+        "Autonomous investigations",
+        "Email support"
+      ],
+      "cta": { "label": "Start Trial", "href": "mailto:hello@metricyak.com" },
+      "highlighted": true
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise",
+      "price": "Contact us",
+      "tagline": "For herds too large for a spreadsheet.",
+      "features": ["Everything in Team", "SSO", "Dedicated support", "Custom workflows"],
+      "cta": { "label": "Contact Sales", "href": "mailto:hello@metricyak.com" }
+    }
+  ]
+}
