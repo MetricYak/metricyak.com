@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Link } from "gatsby"
+import { DocSearch } from "./DocSearch"
 
 const NAV_LINKS: Array<{ label: string; to: string }> = [
   { label: "Docs", to: "/docs/getting-started/" },
@@ -13,7 +14,8 @@ export const Nav = (): React.ReactElement => {
       <Link to="/" className="font-heading text-xl font-bold">
         MetricYak
       </Link>
-      <nav className="flex gap-6">
+      <nav className="flex items-center gap-6">
+        <DocSearch />
         {NAV_LINKS.map((link) => (
           <Link key={link.to} to={link.to} className="font-medium hover:text-mustard">
             {link.label}
