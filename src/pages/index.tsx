@@ -1,7 +1,7 @@
 import * as React from "react"
 
 const IndexPage = (): React.ReactElement => {
-  return <main>MetricYak — under construction</main>
+  return <main className="text-mustard font-heading text-3xl">MetricYak — under construction</main>
 }
 
 export default IndexPage
