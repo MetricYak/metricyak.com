@@ -1,2 +1,9 @@
 .superpowers/
 .impeccable/
+
+# Gatsby
+.cache/
+public/
+node_modules/
+.env.*
+!.env.example
