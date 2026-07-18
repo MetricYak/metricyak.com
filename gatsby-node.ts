@@ -1,4 +1,5 @@
-import type { Actions, GatsbyNode, Node } from "gatsby"
+import path from "path"
+import type { Actions, CreatePagesArgs, GatsbyNode, Node } from "gatsby"
 import { createFilePath } from "gatsby-source-filesystem"
 
 type Collection = "docs" | "blog"
@@ -33,6 +34,53 @@ export const onCreateNode: GatsbyNode["onCreateNode"] = ({ node, getNode, action
   }
 }
 
-export const createPages: GatsbyNode["createPages"] = async () => {
-  // Extended in Task 5 (docs) and Task 6 (blog)
+const createCollectionPages = async (
+  graphql: CreatePagesArgs["graphql"],
+  actions: CreatePagesArgs["actions"],
+  reporter: CreatePagesArgs["reporter"],
+  collection: Collection,
+  templatePath: string
+): Promise<void> => {
+  const { createPage } = actions
+
+  const result = await graphql<{
+    allMdx: {
+      nodes: Array<{
+        id: string
+        fields: { collection: string; slug: string }
+      }>
+    }
+  }>(`
+    query AllCollectionPages($collection: String!) {
+      allMdx(filter: { fields: { collection: { eq: $collection } } }) {
+        nodes {
+          id
+          fields {
+            collection
+            slug
+          }
+        }
+      }
+    }
+  `, { collection })
+
+  if (result.errors) {
+    reporter.panicOnBuild(`Error loading ${collection} MDX for page creation`, result.errors)
+    return
+  }
+
+  const nodes = result.data?.allMdx.nodes ?? []
+
+  nodes.forEach((node) => {
+    createPage({
+      path: node.fields.slug,
+      component: path.resolve(templatePath),
+      context: { id: node.id },
+    })
+  })
+}
+
+export const createPages: GatsbyNode["createPages"] = async ({ graphql, actions, reporter }) => {
+  await createCollectionPages(graphql, actions, reporter, "docs", "./src/templates/doc-page.tsx")
+  // Task 6 adds: await createCollectionPages(graphql, actions, reporter, "blog", "./src/templates/blog-post.tsx")
 }
