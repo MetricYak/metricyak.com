@@ -1,0 +1,39 @@
+{
+  "name": "metricyak-website",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Official docs and website for MetricYak",
+  "scripts": {
+    "develop": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "clean": "gatsby clean",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@docsearch/css": "^3.5.2",
+    "@docsearch/react": "^3.5.2",
+    "@mdx-js/react": "^1.6.22",
+    "gatsby": "^4.25.0",
+    "gatsby-plugin-feed": "^4.25.0",
+    "gatsby-plugin-image": "^2.25.0",
+    "gatsby-plugin-mdx": "^3.20.0",
+    "gatsby-plugin-sharp": "^4.25.0",
+    "gatsby-plugin-sitemap": "^5.25.0",
+    "gatsby-source-filesystem": "^4.25.0",
+    "gatsby-transformer-sharp": "^4.25.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/react-helmet": "^6.1.11",
+    "autoprefixer": "^10.4.17",
+    "gatsby-plugin-postcss": "^5.25.0",
+    "gatsby-plugin-react-helmet": "^5.25.0",
+    "gatsby-plugin-typescript": "^4.25.0",
+    "postcss": "^8.4.33",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
+  }
+}
