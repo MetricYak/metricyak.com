@@ -1,26 +1,35 @@
 import * as React from "react"
 import { Link } from "gatsby"
-import { DocSearch } from "./DocSearch"
+import { Button } from "./ui/button"
+import { LogoMark } from "./LogoMark"
 
-const NAV_LINKS: Array<{ label: string; to: string }> = [
-  { label: "Docs", to: "/docs/getting-started/" },
-  { label: "Pricing", to: "/pricing/" },
-  { label: "Blog", to: "/blog/" },
-]
+const GITHUB_URL = "https://github.com/metricyak/metricyak"
 
 export const Nav = (): React.ReactElement => {
   return (
-    <header className="flex items-center justify-between px-6 py-4 border-b-4 border-ink">
-      <Link to="/" className="font-heading text-xl font-bold">
-        MetricYak
+    <header
+      className="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-metricyak-900 py-[18px] backdrop-blur-sm [padding-inline:clamp(1.25rem,5vw,3.5rem)]"
+      style={{ background: "color-mix(in oklab, var(--background) 88%, transparent)" }}
+    >
+      <Link to="/" className="hover:text-foreground">
+        <LogoMark className="text-[22px]" />
       </Link>
-      <nav className="flex items-center gap-6">
-        <DocSearch />
-        {NAV_LINKS.map((link) => (
-          <Link key={link.to} to={link.to} className="font-medium hover:text-mustard">
-            {link.label}
-          </Link>
-        ))}
+      <nav
+        aria-label="Primary"
+        className="flex flex-wrap items-center gap-x-[clamp(0.75rem,3vw,1.75rem)] gap-y-2"
+      >
+        <Link to="/docs/getting-started/" className="text-sm font-semibold text-foreground hover:text-primary">
+          Docs
+        </Link>
+        <Link to="/blog/" className="text-sm font-semibold text-foreground hover:text-primary">
+          Blog
+        </Link>
+        <a href={GITHUB_URL} className="text-sm font-semibold text-foreground hover:text-primary">
+          GitHub ↗
+        </a>
+        <Button asChild variant="raised" size="sm">
+          <Link to="/docs/getting-started/">metricyak init</Link>
+        </Button>
       </nav>
     </header>
   )

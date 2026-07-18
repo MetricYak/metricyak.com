@@ -8,9 +8,9 @@ type LayoutProps = {
 
 export const Layout = ({ children }: LayoutProps): React.ReactElement => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col overflow-x-hidden">
       <Nav />
-      <main className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">{children}</main>
+      <main className="flex-1 w-full">{children}</main>
       <Footer />
     </div>
   )

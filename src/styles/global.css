@@ -1,14 +1,251 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-body {
-  @apply font-body text-ink bg-white;
+/*
+ * MetricYak design tokens — ported verbatim from the @metricyak/ui design
+ * system (claude.ai/design project d8a97bc5). Raw values live on :root/.dark
+ * so dark mode is a class swap; @theme inline exposes them as Tailwind
+ * utilities (bg-background, text-primary, bg-metricyak-100, etc).
+ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-metricyak-25: var(--metricyak-25);
+  --color-metricyak-50: var(--metricyak-50);
+  --color-metricyak-100: var(--metricyak-100);
+  --color-metricyak-200: var(--metricyak-200);
+  --color-metricyak-300: var(--metricyak-300);
+  --color-metricyak-400: var(--metricyak-400);
+  --color-metricyak-500: var(--metricyak-500);
+  --color-metricyak-600: var(--metricyak-600);
+  --color-metricyak-700: var(--metricyak-700);
+  --color-metricyak-800: var(--metricyak-800);
+  --color-metricyak-900: var(--metricyak-900);
+  --color-metricyak-950: var(--metricyak-950);
+  --color-yellow: var(--yellow);
+  --color-cream: var(--cream);
+  --color-brand-orange: var(--metricyak-brand-orange);
+  --color-button-orange: var(--button-orange);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans:
+    ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-h1,
-h2,
-h3,
-h4 {
-  @apply font-heading;
+:root {
+  --radius: 0.625rem;
+
+  --metricyak-25: #fafaf8;
+  --metricyak-50: #f5f4f0;
+  --metricyak-100: #edecea;
+  --metricyak-200: #e4e2dc;
+  --metricyak-300: #d4d0c8;
+  --metricyak-400: #b8b3a8;
+  --metricyak-500: #8c8880;
+  --metricyak-600: #635f58;
+  --metricyak-700: #3e3b36;
+  --metricyak-800: #252320;
+  --metricyak-900: #1a1917;
+  --metricyak-950: #0f0e0d;
+  --yellow: #f4c842;
+  --cream: #f2ead6;
+  --metricyak-brand-orange: #d9591a;
+  --button-orange: #bf4d13;
+
+  --background: #ffffff;
+  --foreground: var(--metricyak-900);
+  --card: #ffffff;
+  --card-foreground: var(--metricyak-900);
+  --popover: #ffffff;
+  --popover-foreground: var(--metricyak-900);
+  --primary: var(--metricyak-brand-orange);
+  --primary-foreground: var(--metricyak-25);
+  --secondary: var(--metricyak-100);
+  --secondary-foreground: var(--metricyak-900);
+  --muted: var(--metricyak-100);
+  --muted-foreground: var(--metricyak-600);
+  --accent: var(--metricyak-100);
+  --accent-foreground: var(--metricyak-900);
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: var(--metricyak-300);
+  --input: var(--metricyak-300);
+  --ring: var(--metricyak-brand-orange);
+}
+
+.dark {
+  --background: var(--metricyak-900);
+  --foreground: var(--metricyak-50);
+  --card: var(--metricyak-900);
+  --card-foreground: var(--metricyak-50);
+  --popover: var(--metricyak-900);
+  --popover-foreground: var(--metricyak-50);
+  --primary: var(--metricyak-brand-orange);
+  --primary-foreground: var(--metricyak-25);
+  --secondary: var(--metricyak-800);
+  --secondary-foreground: var(--metricyak-50);
+  --muted: var(--metricyak-800);
+  --muted-foreground: var(--metricyak-500);
+  --accent: var(--metricyak-800);
+  --accent-foreground: var(--metricyak-50);
+  --destructive: #ef4444;
+  --destructive-foreground: var(--metricyak-50);
+  --border: var(--metricyak-700);
+  --input: var(--metricyak-700);
+  --ring: var(--metricyak-brand-orange);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+
+  a {
+    color: var(--metricyak-brand-orange);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: var(--button-orange);
+    text-decoration: underline;
+  }
+
+  ::selection {
+    background: var(--yellow);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer components {
+  /* Signature MetricYak CTA: hard border + offset drop-shadow that presses on click. */
+  .raised {
+    --raised-color: var(--metricyak-950);
+    border: 1.5px solid var(--raised-color);
+    box-shadow: 0 4px 0 0 var(--raised-color);
+  }
+
+  .raised:disabled {
+    opacity: 0.5;
+    box-shadow: 0 2px 0 0 var(--raised-color);
+  }
+
+  .raised:focus-visible {
+    outline: 2px solid var(--metricyak-brand-orange);
+    outline-offset: 2px;
+  }
+
+  .raised-soft {
+    --raised-color: var(--metricyak-500);
+  }
+
+  @media not (prefers-reduced-motion: reduce) {
+    .raised {
+      transform: translateY(0);
+      transition:
+        transform 100ms ease,
+        box-shadow 100ms ease;
+    }
+
+    .raised:hover:not(:disabled) {
+      box-shadow: 0 6px 0 0 var(--raised-color);
+      transform: translateY(-2px);
+    }
+
+    .raised:active:not(:disabled) {
+      box-shadow: none;
+      transform: translateY(4px);
+    }
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(28px) rotate(0.8deg);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(28px) rotate(0.8deg);
+  }
+
+  .reveal-in {
+    animation: reveal-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-pending {
+      opacity: 1;
+      transform: none;
+    }
+
+    .reveal-in {
+      animation: none;
+    }
+  }
+
+  /* One-shot success celebration — a satisfying overshoot-free pulse, not a spinner. */
+  @keyframes pulse-once {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.06) rotate(-1deg);
+    }
+    100% {
+      transform: scale(1) rotate(0deg);
+    }
+  }
+
+  .pulse-once {
+    animation: pulse-once 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-once {
+      animation: none;
+    }
+  }
 }

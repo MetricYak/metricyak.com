@@ -4,6 +4,14 @@ import { createFilePath } from "gatsby-source-filesystem"
 
 type Collection = "docs" | "blog"
 
+const WORDS_PER_MINUTE = 200
+
+const computeReadingTime = (rawContent: string): number => {
+  const withoutFrontmatter = rawContent.replace(/^---\n[\s\S]*?\n---\n/, "")
+  const wordCount = withoutFrontmatter.trim().split(/\s+/).filter(Boolean).length
+  return Math.max(1, Math.round(wordCount / WORDS_PER_MINUTE))
+}
+
 const tagNode = (
   node: Node,
   getNode: (id: string) => Node | undefined,
@@ -17,10 +25,23 @@ const tagNode = (
   createNodeField({ node, name: "slug", value: `/${collection}${relativePath}` })
 }
 
+export const createSchemaCustomization: GatsbyNode["createSchemaCustomization"] = ({ actions }) => {
+  // Declared explicitly since no content currently sets frontmatter.tags — without this,
+  // Gatsby's type inference (which needs at least one populated example) can't find the field.
+  actions.createTypes(`
+    type MdxFrontmatter {
+      tags: [String]
+    }
+  `)
+}
+
 export const onCreateNode: GatsbyNode["onCreateNode"] = ({ node, getNode, actions }) => {
   if (node.internal.type !== "Mdx") {
     return
   }
+
+  const { createNodeField } = actions
+  createNodeField({ node, name: "readingTime", value: computeReadingTime(node.internal.content ?? "") })
 
   const parent = getNode(node.parent as string)
   const sourceInstanceName = parent?.sourceInstanceName as string | undefined
