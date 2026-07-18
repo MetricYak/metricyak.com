@@ -7,7 +7,14 @@ const config: GatsbyConfig = {
     siteUrl: `https://metricyak.com`,
   },
   graphqlTypegen: true,
-  plugins: [`gatsby-plugin-typescript`, `gatsby-plugin-postcss`, `gatsby-plugin-image`, `gatsby-plugin-sharp`, `gatsby-transformer-sharp`],
+  plugins: [
+    `gatsby-plugin-typescript`,
+    `gatsby-plugin-postcss`,
+    `gatsby-plugin-react-helmet`,
+    `gatsby-plugin-image`,
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`,
+  ],
 }
 
 export default config
