@@ -27,11 +27,11 @@ export const MascotIllustration = ({ variant, className }: MascotIllustrationPro
       className={className}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="60" cy="60" r="56" fill="#FFC531" />
-      <ellipse cx="60" cy="70" rx="30" ry="22" fill="#111111" />
-      <circle cx="60" cy="42" r="20" fill="#111111" />
-      <circle cx="52" cy="40" r="3" fill="#FFC531" />
-      <circle cx="68" cy="40" r="3" fill="#FFC531" />
+      <circle cx="60" cy="60" r="56" className="fill-mustard" />
+      <ellipse cx="60" cy="70" rx="30" ry="22" className="fill-ink" />
+      <circle cx="60" cy="42" r="20" className="fill-ink" />
+      <circle cx="52" cy="40" r="3" className="fill-mustard" />
+      <circle cx="68" cy="40" r="3" className="fill-mustard" />
     </svg>
   )
 }
