@@ -14,6 +14,56 @@ const config: GatsbyConfig = {
     `gatsby-plugin-image`,
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
+    `gatsby-plugin-sitemap`,
+    {
+      resolve: `gatsby-plugin-feed`,
+      options: {
+        query: `
+          {
+            site {
+              siteMetadata {
+                title
+                description
+                siteUrl
+              }
+            }
+          }
+        `,
+        feeds: [
+          {
+            serialize: ({ query: { site, allMdx } }: any) =>
+              allMdx.nodes.map((node: any) => ({
+                title: node.frontmatter.title,
+                description: node.frontmatter.description,
+                date: node.frontmatter.date,
+                url: site.siteMetadata.siteUrl + node.fields.slug,
+                guid: site.siteMetadata.siteUrl + node.fields.slug,
+              })),
+            query: `
+              {
+                allMdx(
+                  filter: { fields: { collection: { eq: "blog" } } }
+                  sort: { fields: [frontmatter___date], order: DESC }
+                ) {
+                  nodes {
+                    fields {
+                      slug
+                    }
+                    frontmatter {
+                      title
+                      description
+                      date
+                    }
+                  }
+                }
+              }
+            `,
+            output: "/rss.xml",
+            title: "MetricYak Blog RSS Feed",
+          },
+        ],
+      },
+    },
     `gatsby-plugin-mdx`,
     {
       resolve: `gatsby-source-filesystem`,
