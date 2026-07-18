@@ -82,5 +82,5 @@ const createCollectionPages = async (
 
 export const createPages: GatsbyNode["createPages"] = async ({ graphql, actions, reporter }) => {
   await createCollectionPages(graphql, actions, reporter, "docs", "./src/templates/doc-page.tsx")
-  // Task 6 adds: await createCollectionPages(graphql, actions, reporter, "blog", "./src/templates/blog-post.tsx")
+  await createCollectionPages(graphql, actions, reporter, "blog", "./src/templates/blog-post.tsx")
 }
