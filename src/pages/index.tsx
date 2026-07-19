@@ -55,44 +55,58 @@ const CAPABILITIES: Capability[] = [
 ]
 
 const ROTATE_INTERVAL_MS = 3600
-const FADE_DURATION_MS = 220
+const TRANSITION_DURATION_MS = 380
+
+const CapabilityContent = ({ capability }: { capability: Capability }): React.ReactElement => (
+  <>
+    <div className="text-[16px] font-extrabold leading-tight tracking-[-0.02em]">{capability.title}</div>
+    <div className="text-[13px] leading-tight text-muted-foreground">{capability.desc}</div>
+  </>
+)
 
 const CapabilityCarousel = (): React.ReactElement => {
   const reducedMotion = useReducedMotion()
   const [index, setIndex] = React.useState(0)
-  const [fading, setFading] = React.useState(false)
+  const [prevIndex, setPrevIndex] = React.useState<number | null>(null)
 
   React.useEffect(() => {
     if (reducedMotion) return
 
     const rotate = window.setInterval(() => {
-      setFading(true)
-      window.setTimeout(() => {
-        setIndex((current) => (current + 1) % CAPABILITIES.length)
-        setFading(false)
-      }, FADE_DURATION_MS)
+      setIndex((current) => {
+        setPrevIndex(current)
+        return (current + 1) % CAPABILITIES.length
+      })
     }, ROTATE_INTERVAL_MS)
 
     return () => window.clearInterval(rotate)
   }, [reducedMotion])
 
-  const current = CAPABILITIES[index]
+  React.useEffect(() => {
+    if (prevIndex === null) return
+
+    const clear = window.setTimeout(() => setPrevIndex(null), TRANSITION_DURATION_MS)
+    return () => window.clearTimeout(clear)
+  }, [prevIndex])
 
   return (
     <>
       <div className="flex min-w-65 flex-1 items-center gap-3.5 overflow-hidden">
-        <span className="flex-shrink-0 text-[22px] font-black leading-none text-brand-orange">{current.glyph}</span>
-        <div
-          className={cn(
-            "transition-[opacity,transform] duration-[450ms] ease-out",
-            fading ? "translate-y-1.5 opacity-0" : "translate-y-0 opacity-100"
+        <span className="shrink-0 text-[22px] font-black leading-none text-brand-orange">
+          {CAPABILITIES[index].glyph}
+        </span>
+        <div className="relative h-10 flex-1 overflow-hidden">
+          {prevIndex !== null && (
+            <div key={`out-${prevIndex}`} className="capability-slide-out absolute inset-0">
+              <CapabilityContent capability={CAPABILITIES[prevIndex]} />
+            </div>
           )}
-        >
-          <div className="text-[16px] font-extrabold tracking-[-0.02em]">{current.title}</div>
-          <div className="text-[13px] text-muted-foreground">{current.desc}</div>
+          <div key={`in-${index}`} className={cn("absolute inset-0", prevIndex !== null && "capability-slide-in")}>
+            <CapabilityContent capability={CAPABILITIES[index]} />
+          </div>
         </div>
       </div>
-      <div className="flex flex-shrink-0 gap-1.5">
+      <div className="flex shrink-0 gap-1.5">
         {CAPABILITIES.map((capability, dotIndex) => (
           <span
             key={capability.title}
