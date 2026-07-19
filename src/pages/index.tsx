@@ -47,7 +47,7 @@ type Capability = { glyph: string; title: string; desc: string }
 
 const CAPABILITIES: Capability[] = [
   { glyph: "#", title: "Metrics", desc: "Track anything, no schema wrangling." },
-  { glyph: "!", title: "Monitors", desc: "Thresholds that page the right human." },
+  { glyph: "!", title: "Monitors", desc: "The thresholds and conditions." },
   { glyph: "?", title: "Investigations", desc: "Trace an anomaly back to its root cause." },
   { glyph: "→", title: "Workflows", desc: "Chain checks and actions on autopilot." },
   { glyph: "=", title: "Dashboards", desc: "Ship a shareable view in one command." },
