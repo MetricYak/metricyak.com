@@ -1,4 +1,6 @@
 import type { GatsbyBrowser } from "gatsby"
+import "@fontsource-variable/public-sans/wght.css"
+import "@fontsource-variable/jetbrains-mono/wght.css"
 import "./src/styles/global.css"
 
 export const onClientEntry: GatsbyBrowser["onClientEntry"] = () => {
