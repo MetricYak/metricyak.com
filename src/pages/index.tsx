@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Link } from "gatsby"
-import { annotate } from "rough-notation"
+import { annotate, annotationGroup } from "rough-notation"
 import { Layout } from "../components/Layout"
 import { Seo } from "../components/Seo"
 import { Badge } from "../components/ui/badge"
@@ -12,34 +12,51 @@ import { cn } from "../lib/utils"
 
 const DOCS_URL = "/docs/getting-started/"
 
-const HighlightWord = ({ children, delayMs }: { children: string; delayMs: number }): React.ReactElement => {
-  const ref = React.useRef<HTMLSpanElement>(null)
+const HERO_HIGHLIGHT_COLOR = "rgba(244, 197, 66, 0.55)"
+
+const HighlightWord = React.forwardRef<HTMLSpanElement, { children: string }>(({ children }, ref) => (
+  <span ref={ref} className="relative inline-block" style={{ lineHeight: 0.8 }}>
+    {children}
+  </span>
+))
+HighlightWord.displayName = "HighlightWord"
+
+const HeroHeadline = (): React.ReactElement => {
+  const metricsRef = React.useRef<HTMLSpanElement>(null)
+  const autopilotRef = React.useRef<HTMLSpanElement>(null)
 
   React.useEffect(() => {
-    const el = ref.current
-    if (!el) return
+    const metricsEl = metricsRef.current
+    const autopilotEl = autopilotRef.current
+    if (!metricsEl || !autopilotEl) return
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const annotation = annotate(el, {
-      type: "highlight",
-      color: "#f4c842",
-      iterations: 3,
+    const config = {
+      type: "highlight" as const,
+      color: HERO_HIGHLIGHT_COLOR,
+      iterations: 2,
       animationDuration: reducedMotion ? 0 : 500,
-      padding: 4,
-    })
+    }
 
-    const timer = window.setTimeout(() => annotation.show(), delayMs)
+    const metricsAnnotation = annotate(metricsEl, config)
+    const autopilotAnnotation = annotate(autopilotEl, config)
+    annotationGroup([metricsAnnotation, autopilotAnnotation]).show()
 
     return () => {
-      window.clearTimeout(timer)
-      annotation.remove()
+      metricsAnnotation.remove()
+      autopilotAnnotation.remove()
     }
-  }, [delayMs])
+  }, [])
 
   return (
-    <span ref={ref} className="relative">
-      {children}
-    </span>
+    <h1 className="mt-6 mb-5 text-[clamp(2.2rem,6.4vw,5.2rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
+      <span className="block md:whitespace-nowrap">
+        Open-source <HighlightWord ref={metricsRef}>metrics</HighlightWord>.
+      </span>
+      <span className="block">
+        On <HighlightWord ref={autopilotRef}>autopilot</HighlightWord>.
+      </span>
+    </h1>
   )
 }
 
@@ -129,22 +146,8 @@ const IndexPage = (): React.ReactElement => {
 
       {/* Hero */}
       <section className="relative mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(1.5rem,3vw,2rem)]">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute right-[2%] top-[8%] z-0 select-none -rotate-6 text-[clamp(5.6rem,18vw,16.25rem)] font-black tracking-[-0.04em] text-brand-orange opacity-[0.07]"
-        >
-          YAK
-        </div>
-
         <div className="relative z-10 max-w-190">
-          <h1 className="mt-6 mb-5 text-[clamp(2.6rem,6.4vw,5.2rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
-            <span className="block whitespace-nowrap">
-              Open-source <HighlightWord delayMs={0}>metrics</HighlightWord>.
-            </span>
-            <span className="block">
-              On <HighlightWord delayMs={700}>autopilot</HighlightWord>.
-            </span>
-          </h1>
+          <HeroHeadline />
 
           <p className="mb-8 max-w-140 text-[clamp(1.05rem,2vw,1.35rem)] leading-normal text-muted-foreground">
             Complete stack to define, explore and investigate why, when and where metrics change.

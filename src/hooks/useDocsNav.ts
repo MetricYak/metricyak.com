@@ -1,3 +1,4 @@
+import { useMemo } from "react"
 import { useStaticQuery, graphql } from "gatsby"
 
 export type DocsNavPage = {
@@ -41,22 +42,24 @@ export const useDocsNav = (): { pages: DocsNavPage[]; groups: DocsNavGroup[] } =
     }
   `)
 
-  const pages: DocsNavPage[] = data.allMdx.nodes.map((node) => ({
-    slug: node.fields.slug,
-    title: node.frontmatter.title,
-    order: node.frontmatter.order,
-    section: node.frontmatter.section ?? FALLBACK_SECTION,
-  }))
+  return useMemo(() => {
+    const pages: DocsNavPage[] = data.allMdx.nodes.map((node) => ({
+      slug: node.fields.slug,
+      title: node.frontmatter.title,
+      order: node.frontmatter.order,
+      section: node.frontmatter.section ?? FALLBACK_SECTION,
+    }))
 
-  const groups: DocsNavGroup[] = []
-  pages.forEach((page) => {
-    const group = groups.find((g) => g.section === page.section)
-    if (group) {
-      group.pages.push(page)
-    } else {
-      groups.push({ section: page.section, pages: [page] })
-    }
-  })
+    const groups: DocsNavGroup[] = []
+    pages.forEach((page) => {
+      const group = groups.find((g) => g.section === page.section)
+      if (group) {
+        group.pages.push(page)
+      } else {
+        groups.push({ section: page.section, pages: [page] })
+      }
+    })
 
-  return { pages, groups }
+    return { pages, groups }
+  }, [data])
 }
