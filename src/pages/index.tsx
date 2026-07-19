@@ -6,7 +6,6 @@ import { Seo } from "../components/Seo"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
 import { GithubStarButton, GITHUB_REPO } from "../components/GithubStarButton"
-import { useParallaxScroll } from "../hooks/useParallaxScroll"
 import { useReducedMotion } from "../hooks/useReducedMotion"
 import { useScrollReveal } from "../hooks/useScrollReveal"
 import { cn } from "../lib/utils"
@@ -122,7 +121,6 @@ const CapabilityCarousel = (): React.ReactElement => {
 }
 
 const IndexPage = (): React.ReactElement => {
-  const scrollY = useParallaxScroll()
   const oss = useScrollReveal()
 
   return (
@@ -133,15 +131,12 @@ const IndexPage = (): React.ReactElement => {
       <section className="relative mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(1.5rem,3vw,2rem)]">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[2%] top-[8%] z-0 select-none text-[clamp(5.6rem,18vw,16.25rem)] font-black tracking-[-0.04em] text-brand-orange opacity-[0.07]"
-          style={{
-            transform: `rotate(${-6 + scrollY * 0.05}deg) translateY(${scrollY * 0.5}px) scale(${1 + scrollY * 0.0003})`,
-          }}
+          className="pointer-events-none absolute right-[2%] top-[8%] z-0 select-none -rotate-6 text-[clamp(5.6rem,18vw,16.25rem)] font-black tracking-[-0.04em] text-brand-orange opacity-[0.07]"
         >
           YAK
         </div>
 
-        <div className="relative z-10 max-w-190" style={{ transform: `translateY(${scrollY * -0.18}px)` }}>
+        <div className="relative z-10 max-w-190">
           <h1 className="mt-6 mb-5 text-[clamp(2.6rem,6.4vw,5.2rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
             <span className="block whitespace-nowrap">
               Open-source <HighlightWord delayMs={0}>metrics</HighlightWord>.
