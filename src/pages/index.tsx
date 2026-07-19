@@ -23,7 +23,7 @@ const HighlightWord = ({ children, delayMs }: { children: string; delayMs: numbe
     const annotation = annotate(el, {
       type: "highlight",
       color: "#f4c842",
-      iterations: 2,
+      iterations: 3,
       animationDuration: reducedMotion ? 0 : 500,
       padding: 4,
     })
