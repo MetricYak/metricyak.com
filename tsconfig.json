@@ -11,6 +11,6 @@
     "resolveJsonModule": true,
     "noEmit": true
   },
-  "include": ["./src/**/*", "./gatsby-config.ts", "./gatsby-node.ts"],
+  "include": ["./src/**/*", "./gatsby-config.ts", "./gatsby-node.ts", "./gatsby-browser.ts", "./gatsby-ssr.tsx"],
   "exclude": ["node_modules", "public", ".cache"]
 }

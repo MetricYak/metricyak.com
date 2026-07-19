@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Link } from "gatsby"
+import { annotate } from "rough-notation"
 import { Layout } from "../components/Layout"
 import { Seo } from "../components/Seo"
 import { Badge } from "../components/ui/badge"
@@ -11,6 +12,37 @@ import { useScrollReveal } from "../hooks/useScrollReveal"
 import { cn } from "../lib/utils"
 
 const DOCS_URL = "/docs/getting-started/"
+
+const HighlightWord = ({ children, delayMs }: { children: string; delayMs: number }): React.ReactElement => {
+  const ref = React.useRef<HTMLSpanElement>(null)
+
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const annotation = annotate(el, {
+      type: "highlight",
+      color: "#f4c842",
+      iterations: 2,
+      animationDuration: reducedMotion ? 0 : 500,
+      padding: 4,
+    })
+
+    const timer = window.setTimeout(() => annotation.show(), delayMs)
+
+    return () => {
+      window.clearTimeout(timer)
+      annotation.remove()
+    }
+  }, [delayMs])
+
+  return (
+    <span ref={ref} className="relative">
+      {children}
+    </span>
+  )
+}
 
 const IndexPage = (): React.ReactElement => {
   const scrollY = useParallaxScroll()
@@ -27,7 +59,7 @@ const IndexPage = (): React.ReactElement => {
       <Seo title="Metrics that don't leave you guessing" />
 
       {/* Hero */}
-      <section className="relative mx-auto max-w-[1280px] [padding-inline:clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(1.5rem,3vw,2rem)]">
+      <section className="relative mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(1.5rem,3vw,2rem)]">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute right-[2%] top-[8%] z-0 select-none text-[clamp(5.6rem,18vw,16.25rem)] font-black tracking-[-0.04em] text-brand-orange opacity-[0.07]"
@@ -38,40 +70,32 @@ const IndexPage = (): React.ReactElement => {
           YAK
         </div>
 
-        <div className="relative z-10 max-w-[760px]" style={{ transform: `translateY(${scrollY * -0.18}px)` }}>
-          <Badge
-            variant="outline"
-            className="-rotate-3 border-brand-orange px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.04em] text-brand-orange"
-          >
-            Open source · early days, big plans
-          </Badge>
-
+        <div className="relative z-10 max-w-190" style={{ transform: `translateY(${scrollY * -0.18}px)` }}>
           <h1 className="mt-6 mb-5 text-[clamp(2.6rem,6.4vw,5.2rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
-            Your metrics are{" "}
-            <span className="relative inline-block">
-              <span aria-hidden="true" className="absolute -inset-x-1.5 top-[38%] bottom-[2%] -z-10 -rotate-2 bg-yellow" />
-              dying to tell you
-            </span>{" "}
-            something.
+            <span className="block whitespace-nowrap">
+              Open-source <HighlightWord delayMs={0}>metrics</HighlightWord>.
+            </span>
+            <span className="block">
+              On <HighlightWord delayMs={700}>autopilot</HighlightWord>.
+            </span>
           </h1>
 
-          <p className="mb-8 max-w-[560px] text-[clamp(1.05rem,2vw,1.35rem)] leading-normal text-muted-foreground">
-            Watches your numbers, investigates the second they misbehave, and fires off the fix before you&rsquo;ve
-            had your coffee. Open source. Self-hostable. Built to be watched right back.
+          <p className="mb-8 max-w-140 text-[clamp(1.05rem,2vw,1.35rem)] leading-normal text-muted-foreground">
+            Complete stack to define, explore and investigate why, when and where metrics change.
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5">
             <Button asChild variant="raised" size="lg" className="text-base font-bold">
               <Link to={DOCS_URL}>metricyak init →</Link>
             </Button>
-            <GithubStarButton size="lg" className="rotate-1 text-base font-bold" />
+            <GithubStarButton size="lg" className="text-base font-bold" />
           </div>
         </div>
       </section>
 
       {/* Not live yet — subscribe bar */}
-      <section className="mx-auto max-w-[1280px] [padding-inline:clamp(1.25rem,6vw,3.5rem)] [padding-block-end:clamp(1.75rem,4vw,2.5rem)]">
-        <div className="flex -rotate-[0.6deg] flex-wrap items-center justify-between gap-5 rounded-[var(--radius)] border-[1.5px] border-metricyak-900 bg-secondary p-[18px] shadow-[0_6px_0_0_var(--metricyak-900)] [padding-inline:clamp(1.25rem,3vw,2rem)]">
+      <section className="mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] pbe-[clamp(1.75rem,4vw,2.5rem)]">
+        <div className="flex rotate-[0.6deg] flex-wrap items-center justify-between gap-5 rounded-(--radius) border-[1.5px] border-metricyak-900 bg-secondary p-4.5 shadow-[0_6px_0_0_var(--metricyak-900)] px-[clamp(1.25rem,3vw,2rem)]">
           <div>
             <div className="mb-1 text-xs font-bold uppercase tracking-[0.06em] text-brand-orange">Not live yet</div>
             <div className="text-[19px] font-extrabold tracking-[-0.02em]">
@@ -83,7 +107,7 @@ const IndexPage = (): React.ReactElement => {
               type="email"
               placeholder="you@company.com"
               required
-              className="min-w-[220px]"
+              className="min-w-55"
               disabled={subscribed}
             />
             <Button
@@ -103,7 +127,7 @@ const IndexPage = (): React.ReactElement => {
       <section
         ref={oss.ref as React.RefObject<HTMLElement | null>}
         className={cn(
-          "dark relative overflow-hidden bg-background text-foreground [padding-block:clamp(3.5rem,9vw,6.875rem)] [padding-inline:clamp(1.25rem,6vw,3.5rem)]",
+          "dark relative overflow-hidden bg-background text-foreground py-[clamp(3.5rem,9vw,6.875rem)] px-[clamp(1.25rem,6vw,3.5rem)]",
           oss.armed && !oss.revealed && "reveal-pending",
           oss.armed && oss.revealed && "reveal-in"
         )}
@@ -115,7 +139,7 @@ const IndexPage = (): React.ReactElement => {
           OSS
         </div>
 
-        <div className="relative z-10 mx-auto max-w-[720px] text-center">
+        <div className="relative z-10 mx-auto max-w-180 text-center">
           <div className="inline-block -rotate-2">
             <Badge className="bg-brand-orange text-[11px] font-bold uppercase tracking-[0.04em] text-metricyak-25">
               MIT licensed
