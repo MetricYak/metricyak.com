@@ -252,11 +252,11 @@
   }
 
   .capability-slide-out {
-    animation: capability-slide-out 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: capability-slide-out 1800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .capability-slide-in {
-    animation: capability-slide-in 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: capability-slide-in 1800ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   @media (prefers-reduced-motion: reduce) {

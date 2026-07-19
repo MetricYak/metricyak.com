@@ -70,8 +70,8 @@ const CAPABILITIES: Capability[] = [
   { glyph: "=", title: "Dashboards", desc: "Ship a shareable view in one command." },
 ]
 
-const ROTATE_INTERVAL_MS = 3600
-const TRANSITION_DURATION_MS = 380
+const ROTATE_INTERVAL_MS = 4000
+const TRANSITION_DURATION_MS = 1800
 
 const CapabilityContent = ({ capability }: { capability: Capability }): React.ReactElement => (
   <>
