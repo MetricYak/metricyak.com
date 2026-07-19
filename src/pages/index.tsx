@@ -145,7 +145,7 @@ const IndexPage = (): React.ReactElement => {
       <Seo title="Metrics that don't leave you guessing" />
 
       {/* Hero */}
-      <section className="relative mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(1.5rem,3vw,2rem)]">
+      <section className="relative mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(2.5rem,6vw,4rem)]">
         <div className="relative z-10 max-w-190">
           <HeroHeadline />
 
@@ -163,7 +163,7 @@ const IndexPage = (): React.ReactElement => {
       </section>
 
       {/* Under the hood — capability carousel */}
-      <section className="mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] pbe-[clamp(1.75rem,4vw,2.5rem)]">
+      <section className="mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] pbe-[clamp(2.5rem,6vw,4rem)]">
         <div className="flex rotate-[0.6deg] flex-wrap items-center justify-between gap-5 rounded-(--radius) border-[1.5px] border-metricyak-900 bg-secondary p-4.5 shadow-[0_6px_0_0_var(--metricyak-900)] px-[clamp(1.25rem,3vw,2rem)]">
           <div className="text-xs font-bold uppercase tracking-[0.06em] text-brand-orange">Under the hood</div>
           <CapabilityCarousel />

@@ -48,7 +48,7 @@ export const Nav = (): React.ReactElement => {
 
   return (
     <header
-      className="sticky top-0 z-40 backdrop-blur-sm"
+      className="backdrop-blur-sm"
       style={{ background: "color-mix(in oklab, var(--background) 88%, transparent)" }}
     >
       <div className="flex items-center justify-between gap-4 border-b border-metricyak-900 py-[18px] [padding-inline:clamp(1.25rem,5vw,3.5rem)]">
