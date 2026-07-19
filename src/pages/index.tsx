@@ -5,9 +5,8 @@ import { Layout } from "../components/Layout"
 import { Seo } from "../components/Seo"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
 import { GithubStarButton, GITHUB_REPO } from "../components/GithubStarButton"
-import { useParallaxScroll } from "../hooks/useParallaxScroll"
+import { useReducedMotion } from "../hooks/useReducedMotion"
 import { useScrollReveal } from "../hooks/useScrollReveal"
 import { cn } from "../lib/utils"
 
@@ -24,7 +23,7 @@ const HighlightWord = ({ children, delayMs }: { children: string; delayMs: numbe
     const annotation = annotate(el, {
       type: "highlight",
       color: "#f4c842",
-      iterations: 2,
+      iterations: 3,
       animationDuration: reducedMotion ? 0 : 500,
       padding: 4,
     })
@@ -44,15 +43,85 @@ const HighlightWord = ({ children, delayMs }: { children: string; delayMs: numbe
   )
 }
 
-const IndexPage = (): React.ReactElement => {
-  const scrollY = useParallaxScroll()
-  const [subscribed, setSubscribed] = React.useState(false)
-  const oss = useScrollReveal()
+type Capability = { glyph: string; title: string; desc: string }
 
-  const handleSubscribe = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault()
-    setSubscribed(true)
-  }
+const CAPABILITIES: Capability[] = [
+  { glyph: "#", title: "Metrics", desc: "Track anything, no schema wrangling." },
+  { glyph: "!", title: "Monitors", desc: "The thresholds and conditions." },
+  { glyph: "?", title: "Investigations", desc: "Trace an anomaly back to its root cause." },
+  { glyph: "→", title: "Workflows", desc: "Chain checks and actions on autopilot." },
+  { glyph: "=", title: "Dashboards", desc: "Ship a shareable view in one command." },
+]
+
+const ROTATE_INTERVAL_MS = 3600
+const TRANSITION_DURATION_MS = 380
+
+const CapabilityContent = ({ capability }: { capability: Capability }): React.ReactElement => (
+  <>
+    <div className="text-[16px] font-extrabold leading-tight tracking-[-0.02em]">{capability.title}</div>
+    <div className="text-[13px] leading-tight text-muted-foreground">{capability.desc}</div>
+  </>
+)
+
+const CapabilityCarousel = (): React.ReactElement => {
+  const reducedMotion = useReducedMotion()
+  const [index, setIndex] = React.useState(0)
+  const [prevIndex, setPrevIndex] = React.useState<number | null>(null)
+
+  React.useEffect(() => {
+    if (reducedMotion) return
+
+    const rotate = window.setInterval(() => {
+      setIndex((current) => {
+        setPrevIndex(current)
+        return (current + 1) % CAPABILITIES.length
+      })
+    }, ROTATE_INTERVAL_MS)
+
+    return () => window.clearInterval(rotate)
+  }, [reducedMotion])
+
+  React.useEffect(() => {
+    if (prevIndex === null) return
+
+    const clear = window.setTimeout(() => setPrevIndex(null), TRANSITION_DURATION_MS)
+    return () => window.clearTimeout(clear)
+  }, [prevIndex])
+
+  return (
+    <>
+      <div className="flex min-w-65 flex-1 items-center gap-3.5 overflow-hidden">
+        <span className="shrink-0 text-[22px] font-black leading-none text-brand-orange">
+          {CAPABILITIES[index].glyph}
+        </span>
+        <div className="relative h-10 flex-1 overflow-hidden">
+          {prevIndex !== null && (
+            <div key={`out-${prevIndex}`} className="capability-slide-out absolute inset-0">
+              <CapabilityContent capability={CAPABILITIES[prevIndex]} />
+            </div>
+          )}
+          <div key={`in-${index}`} className={cn("absolute inset-0", prevIndex !== null && "capability-slide-in")}>
+            <CapabilityContent capability={CAPABILITIES[index]} />
+          </div>
+        </div>
+      </div>
+      <div className="flex shrink-0 gap-1.5">
+        {CAPABILITIES.map((capability, dotIndex) => (
+          <span
+            key={capability.title}
+            className={cn(
+              "size-1.5 rounded-full transition-[opacity,background-color] duration-300",
+              dotIndex === index ? "bg-brand-orange opacity-100" : "bg-metricyak-900 opacity-30"
+            )}
+          />
+        ))}
+      </div>
+    </>
+  )
+}
+
+const IndexPage = (): React.ReactElement => {
+  const oss = useScrollReveal()
 
   return (
     <Layout>
@@ -62,15 +131,12 @@ const IndexPage = (): React.ReactElement => {
       <section className="relative mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] [padding-block-start:clamp(3.5rem,10vw,7.5rem)] [padding-block-end:clamp(1.5rem,3vw,2rem)]">
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute right-[2%] top-[8%] z-0 select-none text-[clamp(5.6rem,18vw,16.25rem)] font-black tracking-[-0.04em] text-brand-orange opacity-[0.07]"
-          style={{
-            transform: `rotate(${-6 + scrollY * 0.05}deg) translateY(${scrollY * 0.5}px) scale(${1 + scrollY * 0.0003})`,
-          }}
+          className="pointer-events-none absolute right-[2%] top-[8%] z-0 select-none -rotate-6 text-[clamp(5.6rem,18vw,16.25rem)] font-black tracking-[-0.04em] text-brand-orange opacity-[0.07]"
         >
           YAK
         </div>
 
-        <div className="relative z-10 max-w-190" style={{ transform: `translateY(${scrollY * -0.18}px)` }}>
+        <div className="relative z-10 max-w-190">
           <h1 className="mt-6 mb-5 text-[clamp(2.6rem,6.4vw,5.2rem)] font-extrabold leading-[0.98] tracking-[-0.04em] text-balance">
             <span className="block whitespace-nowrap">
               Open-source <HighlightWord delayMs={0}>metrics</HighlightWord>.
@@ -93,33 +159,11 @@ const IndexPage = (): React.ReactElement => {
         </div>
       </section>
 
-      {/* Not live yet — subscribe bar */}
+      {/* Under the hood — capability carousel */}
       <section className="mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] pbe-[clamp(1.75rem,4vw,2.5rem)]">
         <div className="flex rotate-[0.6deg] flex-wrap items-center justify-between gap-5 rounded-(--radius) border-[1.5px] border-metricyak-900 bg-secondary p-4.5 shadow-[0_6px_0_0_var(--metricyak-900)] px-[clamp(1.25rem,3vw,2rem)]">
-          <div>
-            <div className="mb-1 text-xs font-bold uppercase tracking-[0.06em] text-brand-orange">Not live yet</div>
-            <div className="text-[19px] font-extrabold tracking-[-0.02em]">
-              Get the nudge the moment MetricYak ships.
-            </div>
-          </div>
-          <form onSubmit={handleSubscribe} className="flex flex-wrap gap-2">
-            <Input
-              type="email"
-              placeholder="you@company.com"
-              required
-              className="min-w-55"
-              disabled={subscribed}
-            />
-            <Button
-              type="submit"
-              variant="raised"
-              size="lg"
-              disabled={subscribed}
-              className={subscribed ? "pulse-once" : undefined}
-            >
-              {subscribed ? "You're in ✓" : "Notify me"}
-            </Button>
-          </form>
+          <div className="text-xs font-bold uppercase tracking-[0.06em] text-brand-orange">Under the hood</div>
+          <CapabilityCarousel />
         </div>
       </section>
 

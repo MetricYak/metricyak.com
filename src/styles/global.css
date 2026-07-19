@@ -227,6 +227,45 @@
     }
   }
 
+  /* "Under the hood" capability carousel — outgoing item rises out and fades,
+     incoming item rises in from below and fades in (odometer-style crossfade). */
+  @keyframes capability-slide-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+  }
+
+  @keyframes capability-slide-in {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .capability-slide-out {
+    animation: capability-slide-out 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .capability-slide-in {
+    animation: capability-slide-in 380ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .capability-slide-out,
+    .capability-slide-in {
+      animation: none;
+    }
+  }
+
   /* One-shot success celebration — a satisfying overshoot-free pulse, not a spinner. */
   @keyframes pulse-once {
     0% {
