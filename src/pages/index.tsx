@@ -5,9 +5,9 @@ import { Layout } from "../components/Layout"
 import { Seo } from "../components/Seo"
 import { Badge } from "../components/ui/badge"
 import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
 import { GithubStarButton, GITHUB_REPO } from "../components/GithubStarButton"
 import { useParallaxScroll } from "../hooks/useParallaxScroll"
+import { useReducedMotion } from "../hooks/useReducedMotion"
 import { useScrollReveal } from "../hooks/useScrollReveal"
 import { cn } from "../lib/utils"
 
@@ -44,15 +44,72 @@ const HighlightWord = ({ children, delayMs }: { children: string; delayMs: numbe
   )
 }
 
+type Capability = { glyph: string; title: string; desc: string }
+
+const CAPABILITIES: Capability[] = [
+  { glyph: "#", title: "Metrics", desc: "Track anything, no schema wrangling." },
+  { glyph: "!", title: "Monitors", desc: "Thresholds that page the right human." },
+  { glyph: "?", title: "Investigations", desc: "Trace an anomaly back to its root cause." },
+  { glyph: "→", title: "Workflows", desc: "Chain checks and actions on autopilot." },
+  { glyph: "=", title: "Dashboards", desc: "Ship a shareable view in one command." },
+]
+
+const ROTATE_INTERVAL_MS = 3600
+const FADE_DURATION_MS = 220
+
+const CapabilityCarousel = (): React.ReactElement => {
+  const reducedMotion = useReducedMotion()
+  const [index, setIndex] = React.useState(0)
+  const [fading, setFading] = React.useState(false)
+
+  React.useEffect(() => {
+    if (reducedMotion) return
+
+    const rotate = window.setInterval(() => {
+      setFading(true)
+      window.setTimeout(() => {
+        setIndex((current) => (current + 1) % CAPABILITIES.length)
+        setFading(false)
+      }, FADE_DURATION_MS)
+    }, ROTATE_INTERVAL_MS)
+
+    return () => window.clearInterval(rotate)
+  }, [reducedMotion])
+
+  const current = CAPABILITIES[index]
+
+  return (
+    <>
+      <div className="flex min-w-65 flex-1 items-center gap-3.5 overflow-hidden">
+        <span className="flex-shrink-0 text-[22px] font-black leading-none text-brand-orange">{current.glyph}</span>
+        <div
+          className={cn(
+            "transition-[opacity,transform] duration-[450ms] ease-out",
+            fading ? "translate-y-1.5 opacity-0" : "translate-y-0 opacity-100"
+          )}
+        >
+          <div className="text-[16px] font-extrabold tracking-[-0.02em]">{current.title}</div>
+          <div className="text-[13px] text-muted-foreground">{current.desc}</div>
+        </div>
+      </div>
+      <div className="flex flex-shrink-0 gap-1.5">
+        {CAPABILITIES.map((capability, dotIndex) => (
+          <span
+            key={capability.title}
+            className={cn(
+              "size-1.5 rounded-full transition-[opacity,background-color] duration-300",
+              dotIndex === index ? "bg-brand-orange opacity-100" : "bg-metricyak-900 opacity-30"
+            )}
+          />
+        ))}
+      </div>
+    </>
+  )
+}
+
 const IndexPage = (): React.ReactElement => {
   const scrollY = useParallaxScroll()
-  const [subscribed, setSubscribed] = React.useState(false)
   const oss = useScrollReveal()
-
-  const handleSubscribe = (event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault()
-    setSubscribed(true)
-  }
 
   return (
     <Layout>
@@ -93,33 +150,11 @@ const IndexPage = (): React.ReactElement => {
         </div>
       </section>
 
-      {/* Not live yet — subscribe bar */}
+      {/* Under the hood — capability carousel */}
       <section className="mx-auto max-w-7xl px-[clamp(1.25rem,6vw,3.5rem)] pbe-[clamp(1.75rem,4vw,2.5rem)]">
         <div className="flex rotate-[0.6deg] flex-wrap items-center justify-between gap-5 rounded-(--radius) border-[1.5px] border-metricyak-900 bg-secondary p-4.5 shadow-[0_6px_0_0_var(--metricyak-900)] px-[clamp(1.25rem,3vw,2rem)]">
-          <div>
-            <div className="mb-1 text-xs font-bold uppercase tracking-[0.06em] text-brand-orange">Not live yet</div>
-            <div className="text-[19px] font-extrabold tracking-[-0.02em]">
-              Get the nudge the moment MetricYak ships.
-            </div>
-          </div>
-          <form onSubmit={handleSubscribe} className="flex flex-wrap gap-2">
-            <Input
-              type="email"
-              placeholder="you@company.com"
-              required
-              className="min-w-55"
-              disabled={subscribed}
-            />
-            <Button
-              type="submit"
-              variant="raised"
-              size="lg"
-              disabled={subscribed}
-              className={subscribed ? "pulse-once" : undefined}
-            >
-              {subscribed ? "You're in ✓" : "Notify me"}
-            </Button>
-          </form>
+          <div className="text-xs font-bold uppercase tracking-[0.06em] text-brand-orange">Under the hood</div>
+          <CapabilityCarousel />
         </div>
       </section>
 
